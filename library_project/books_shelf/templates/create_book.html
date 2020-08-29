@@ -1,0 +1,69 @@
+{% extends "wrapper.html" %}
+{% block content %}
+<!-- <p>URL of this page: {{ request.path|urlencode }}</p> -->
+    <h1 class="display-4">Новая книга в коллекцию</h1>
+    <form action="/book/new" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+
+            <label for="authors_list" class="lead text-info mt-3">Автор книги</label>
+            <div class="form-row">
+                <div class="col">
+                    <select class="form-control custom-select border-info text-secondary" id="authors_list" name="author">
+                        <option selected></option>
+                        {% for author in authors_list %}
+                            <option value="{{ author.id }}">{{ author.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-outline-info" href="/author/new/1">Добавить</a>
+                 </div>
+            </div>
+
+            <label for="publishers_list" class="lead text-info mt-3">Издатель книги</label>
+            <div class="form-row">
+                <div class="col">
+                    <select class="form-control custom-select border-info text-secondary" id="publishers_list" name="publisher">
+                        <option selected></option>
+                        {% for publisher in publishers_list %}
+                            <option value="{{ publisher.id }}">{{ publisher.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-outline-info" href="/publisher/new/1">Добавить</a>
+                </div>
+            </div>
+   
+            <label for="book_name" class="lead text-info mt-3">Название книги</label>
+            <textarea class="form-control border-info text-secondary" id="book_name" rows="1" name="title"></textarea>
+
+            <label for="book_description" class="lead text-info mt-3">Аннотация к книге</label>
+            <textarea class="form-control border-info text-secondary" id="book_description" rows="5" name="description"></textarea>
+
+            <div class="form-row mt-3">
+                <div class="col">
+                    <label for="year_release" class="lead text-info">Год&nbsp;выхода книги</label>
+                    <input type="text" class="form-control border-info text-secondary" id="year_release" name="year_release">
+                </div>
+
+                <div class="col">
+                    <label for="copy_count" class="lead text-info">Количество копий</label>
+                    <input type="text" class="form-control border-info text-secondary" id="copy_count" name="copy_count">
+                </div>
+
+                <div class="col">
+                    <label for="price" class="lead text-info">Цена&nbsp;одной книги</label>
+                    <input type="text" class="form-control border-info text-secondary" id="price" name="price">
+                </div>
+            </div>
+
+            <label for="isbn" class="lead text-info mt-3">Международный стандартный книжный номер</label>
+            <input type="text" class="form-control border-info text-secondary" id="isbn" name="ISBN">
+        </div>
+        <!-- <input type="hidden" name="friends"/> -->
+        <input class="btn btn-outline-info mt-2 mb-3 active" type="submit" value="Сохранить">  
+    </form>
+
+{% endblock %}

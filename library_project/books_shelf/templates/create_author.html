@@ -1,0 +1,24 @@
+{% extends "wrapper.html" %}
+{% block content %}
+    <h1 class="display-4">Новый автор</h1>
+    <form action="/author/new/{{ toggle }}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="author_name" class="lead text-info mt-3">Имя автора</label>
+            <input type="text" class="form-control border-info text-secondary" id="author_name" name="full_name">
+
+            <div class="form-row mt-3">
+                <div class="col">
+                    <label for="birth_year" class="lead text-info mt-3">Год рождения</label>
+                    <input type="text" class="form-control border-info text-secondary" id="birth_year" name="birth_year">
+                </div>
+                <div class="col">
+                    <label for="country" class="lead text-info mt-3">Страна</label>
+                    <input type="text" class="form-control border-info text-secondary" id="country" name="country">
+                </div>
+            </div>    
+        </div>
+        <input class="btn btn-outline-info mt-2 mb-3 active" type="submit" value="Сохранить">  
+    </form>
+
+{% endblock %}

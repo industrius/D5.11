@@ -1,0 +1,44 @@
+{% extends "wrapper.html" %}
+{% block content %}
+  <div class="row d-flex align-items-end justify-content-between">
+    <h1 class="col-auto display-4">Авторы книг в моей коллекции</h1>
+    <div class="col-auto">
+      <a class="btn btn-outline-info" href="/author/new/0">Добавить автора</a>
+    </div>
+  </div>
+
+  <div class="table-responsive my-3">
+    <table class="table table-borderless text-secondary table-hover m-0">
+      <thead class="bg-info text-light">
+        <tr>
+          <th scope="col">Автор</th>
+          <th scope="col" class="text-center">Страна</th>
+          <th scope="col" class="text-center">Дата рождения</th>
+          <th scope="col" class="text-center">Книги в библиотеке</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for author in authors_list %}
+          <tr style="cursor: pointer; cursor: hand;" onclick="window.location='/author/{{ author.id }}'">
+              <th scope="row">{{ author.full_name }}</th>
+              <td class="text-center">{{ author.country }}</td>
+              <td class="text-center">{{ author.birth_year }}</td>
+              <td class="text-center">{{ author.books_count }}</td>
+              <td class="text-right">
+                <form action="/author/delete" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="author_id" value="{{author.id}}"/>
+                  <input class="btn btn-outline-danger" type="submit" value="Удалить"/>
+                </form>
+              </td>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+
+  <span class="badge rounded-0 badge-info pb-1 col-12 my-3">Общее количество авторов {{ authors_list|length }}</span>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "wrapper.html" %}
+{% block content %}
+    <div class="list-group">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+            <h1 class="display-4">{{ book.title }}</h1>
+            <small class="text-info">Год издания <span class="text-danger">:</span> {{ book.year_release }}</small>
+        </div>
+
+        <div class="row d-flex justify-content-between mt-3">
+            <div class="col-auto">
+                <a class="btn btn-outline-info text-nowrap " href="/author/{{ book.author.id }}">{{ book.author }} </a>
+            </div>
+            <div class="col-auto d-flex align-items-center flex-row my-3 my-md-3 my-lg-0">
+                <span class="text-info pr-3">Количество книг<span class="text-danger">:</span> {{ book.copy_count }}</span>
+                <form id="inc" action="/increment" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{book.id}}" />
+                </form>
+                <form id="dec" action="/decrement" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{book.id}}" />
+                </form>
+
+                <div class="btn-group float-right" role="group">
+                    <input form="inc" class="btn btn-outline-info" type="submit" value="Увеличить" />
+                    <input form="dec" class="btn btn-outline-info" type="submit" value="Уменьшить" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <p class="my-4">{{ book.description }}</p>
+
+    <div class="table-responsive my-3">
+        <table class="table table-borderless text-secondary table-hover m-0">
+            <thead class="bg-info text-light">
+            <tr>
+                <th scope="col">Друзья, которые читают эту книгу</th>
+            </tr>
+            </thead>
+            <tbody>
+    
+            {% for friend in friends_list %}
+                <tr style="cursor: pointer; cursor: hand;" onclick="window.location='/friend/{{ friend.id }}'">
+                    <th scope="row">{{ friend.full_name }}</th>
+                </tr>
+            {% endfor %}
+    
+            </tbody>
+        </table>
+    </div>
+
+
+    {% if book.copy_count > 0 %}
+        <form action="/give_to_friend" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="book_id" value="{{book.id}}"/>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text text-info bg-light border-info border-right-0 pr-0">Выберите друга, чтобы передать ему книгу &nbsp<span class="text-danger">:</span></span>
+                </div>
+
+                <select class="custom-select border-info bg-light text-info border-left-0 border-right-0 pl-2" name="friend_id">
+                    <option selected></option>
+                    {% for friend in all_friends_list %}
+                        {% if not friend in friends_list%}
+                            <option value="{{ friend.id }}">{{ friend.full_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <div class="input-group-append">
+                    <input class="btn btn-outline-info" type="submit" value="Передать"/>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+    <form action="/book/delete" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="book_id" value="{{book.id}}"/>
+        <input class="btn btn-outline-danger col-12 my-3" type="submit" value="Удалить книгу"/>
+    </form>
+{% endblock %}

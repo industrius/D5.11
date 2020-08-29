@@ -1,0 +1,31 @@
+{% extends "wrapper.html" %}
+{% block content %}
+  <h1 class="display-4">{{ publisher.title }}</h1>
+  <div class="row mt-4">
+    <div class="col-12">
+      <table class="table table-borderless text-secondary table-hover m-0">
+        <thead class="bg-info text-light">
+          <tr>
+            <th scope="col">Название книги</th>
+            <th scope="col">Автор</th>
+            <th scope="col" class="text-center">Страна</th>
+            <th scope="col" class="text-center">Год издания</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for book in books_list %}
+            <tr style="cursor: pointer; cursor: hand;" onclick="window.location='/book/{{ book.id }}'">
+                <th scope="row">{{ book.title }}</th>
+                <td class=>{{ book.author.full_name }}</td>
+                <td class="text-center">{{ book.author.country }}</td>
+                <td class="text-center">{{ book.year_release }}</td>
+            </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span class="badge rounded-0 badge-info pb-1 col-12 my-3">Общее количество книг этого издателя в библиотеке {{ books_list|length }}</span>
+{% endblock %}

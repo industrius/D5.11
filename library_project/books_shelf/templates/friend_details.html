@@ -1,0 +1,59 @@
+{% extends "wrapper.html" %}
+{% block content %}
+    <h1 class="display-4">{{ friend.full_name }}</h1>
+    {% if friend.rented_by_friend.all %}
+        <p class="lead text-info">Книги, которые читает друг</p>
+        <div class="row my-3">
+            <div class="col-12">
+                <table class="table table-borderless text-secondary table-hover m-0">
+                    <thead class="bg-info text-light">
+                        <tr>
+                            <th scope="col">Название книги</th>
+                            <th scope="col">Автор</th>
+                            <th scope="col" class="text-center">Остаток книг в библиотеке</th>
+                            <th scope="col" class="text-right">Вернуть книгу</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in friend.rented_by_friend.all %}
+                            <tr style="cursor: pointer; cursor: hand;" onclick="window.location='/book/{{ book.id }}'">
+                                <th scope="row">{{ book.title }}</th>
+                                <td>{{ book.author.full_name }}</td>
+                                <td class="text-center">{{ book.copy_count }}</td>
+                                <td class="text-right">
+                                    <form action="/return_book" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="book_id" value="{{book.id}}"/>
+                                        <input type="hidden" name="friend_id" value="{{friend.id}}"/>
+                                        <input class="btn btn-outline-info" type="submit" value="Вернуть"/>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <form action="/give_to_friend" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="friend_id" value="{{friend.id}}"/>
+            <div class="input-group my-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text text-info bg-light border-info border-right-0 pr-0">Выберите книгу, чтобы передать другу &nbsp<span class="text-danger">:</span></span>
+                </div>
+
+                <select class="custom-select border-info bg-light text-info border-left-0 border-right-0 pl-2" name="book_id">
+                    <option selected></option>
+                    {% for book in books_list %}
+                        <option value="{{ book.id }}">{{ book.title }}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="input-group-append">
+                    <input class="btn btn-outline-info" type="submit" value="Передать"/>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

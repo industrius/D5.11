@@ -1,0 +1,41 @@
+{% extends "wrapper.html" %}
+{% block content %}
+  <div class="row d-flex align-items-end justify-content-between">
+    <h1 class="col-auto display-4">Перечень издательств</h1>
+    <div class="col-auto">
+      <a class="btn btn-outline-info" href="/publisher/new/0">Добавить издателя</a>
+    </div>
+  </div>
+
+  <div class="table-responsive my-3">
+    <table class="table table-borderless text-secondary table-hover m-0">
+      <thead class="bg-info text-light">
+        <tr>
+          <th scope="col">Наименование издательства</th>
+          <th scope="col" class="text-center">Книги в библиотеке</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for publisher in publishers_list %}
+          <tr style="cursor: pointer; cursor: hand;" onclick="window.location='/publisher/{{ publisher.id }}'">
+              <th scope="row">{{ publisher.title }}</th>
+              <td class="text-center">{{ publisher.books_count }}</td>
+              <td class="text-right">
+                <form action="/publisher/delete" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="publisher_id" value="{{publisher.id}}"/>
+                  <input class="btn btn-outline-danger" type="submit" value="Удалить"/>
+                </form>
+              </td>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <span class="badge rounded-0 badge-info pb-1 col-12 my-3">Общее количество издательств {{ publishers_list|length }}</span>
+{% endblock %}
