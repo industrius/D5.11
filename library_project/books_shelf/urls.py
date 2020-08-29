@@ -21,5 +21,6 @@ urlpatterns = [
     path("author/delete", views.DeleteAuthor),
     path("publisher/delete", views.DeletePublisher),
     path("friend/delete", views.DeleteFriend),
-    path("book/delete", views.DeleteBook)
+    path("book/delete", views.DeleteBook),
+    path("error", views.ShowError.as_view())
 ]

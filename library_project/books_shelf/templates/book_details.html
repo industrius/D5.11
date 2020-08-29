@@ -61,7 +61,7 @@
                 </div>
 
                 <select class="custom-select border-info bg-light text-info border-left-0 border-right-0 pl-2" name="friend_id">
-                    <option selected></option>
+                    <option value="" selected>Кликните здесь, чтобы выберать друга</option>
                     {% for friend in all_friends_list %}
                         {% if not friend in friends_list%}
                             <option value="{{ friend.id }}">{{ friend.full_name }}</option>

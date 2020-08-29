@@ -81,6 +81,13 @@ class FriendDetails(View):
         books = Book.objects.all()
         return render(request, "friend_details.html", {"friend":friend, "books_list": books,"friends_active":"active"})
 
+class ShowError(View):
+    """
+    Показывает страницу ошибки
+    """
+    def get(self, request):
+        return render(request, "error.html")
+
 def book_increment(request):
     """
     Обработка увеличения количества экземпляров книги в библиотеке
@@ -118,13 +125,14 @@ def give_to_friend(request):
     if request.method == "POST":
         book_id = request.POST["book_id"]
         friend_id = request.POST["friend_id"]
-        book = Book.objects.filter(id=book_id).first()
-        friend = Friend.objects.filter(id=friend_id).first()
-        if book.copy_count > 0:
-            if not friend in book.friends.all():
-                book.copy_count -= 1
-                book.friends.add(friend)
-                book.save()
+        if friend_id != "":
+            book = Book.objects.filter(id=book_id).first()
+            friend = Friend.objects.filter(id=friend_id).first()
+            if book.copy_count > 0:
+                if not friend in book.friends.all():
+                    book.copy_count -= 1
+                    book.friends.add(friend)
+                    book.save()
         return redirect("book/" + book_id)
 
 def return_book(request):
@@ -152,14 +160,13 @@ def CreateBook(request):
         form = BookForm(request.POST)
         if form.is_valid():
             form.save()
-            print("valid")
+            return redirect("/")
         else:
-            print("not valid")
-        return redirect("/")
+            return redirect("/error")
     else:
         authors = Author.objects.all()
         publishers = Publisher.objects.all()
-        return render(request, "create_book.html", {"book_form": book_form, "authors_list": authors, "publishers_list": publishers})
+        return render(request, "create_book.html", {"book_form": book_form, "authors_list": authors, "publishers_list": publishers, "books_active": "active"})
 
 def CreateAuthor(request, toggle):
     """
@@ -171,12 +178,14 @@ def CreateAuthor(request, toggle):
         form = AuthorForm(request.POST)
         if form.is_valid():
             form.save()
-        if toggle == 0:
-            return redirect("/authors")
+            if toggle == 0:
+                return redirect("/authors")
+            else:
+                return redirect("/book/new")
         else:
-            return redirect("/book/new")
+            return redirect("/error")
     else:
-        return render(request, "create_author.html", {"author_form": author_form, "toggle":toggle})
+        return render(request, "create_author.html", {"author_form": author_form, "toggle":toggle, "authors_active": "active"})
 
 def CreatePublisher(request, toggle):
     """
@@ -188,12 +197,14 @@ def CreatePublisher(request, toggle):
         form = PublisherForm(request.POST)
         if form.is_valid():
             form.save()
-        if toggle == 0:
-            return redirect("/publishers")
+            if toggle == 0:
+                return redirect("/publishers")
+            else:
+                return redirect("/book/new")
         else:
-            return redirect("/book/new")
+            return redirect("/error")
     else:
-        return render(request, "create_publisher.html", {"publisher_form": publisher_form, "toggle":toggle})
+        return render(request, "create_publisher.html", {"publisher_form": publisher_form, "toggle":toggle, "publishers_active": "active"})
 
 def CreateFriend(request):
     """
@@ -205,9 +216,11 @@ def CreateFriend(request):
         form = FriendForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect("/friends")
+            return redirect("/friends")
+        else:
+            return redirect("/error")
     else:
-        return render(request, "create_friend.html", {"friend_form": friend_form})
+        return render(request, "create_friend.html", {"friend_form": friend_form, "friends_active":"active"})
 
 def DeleteAuthor(request):
     """
